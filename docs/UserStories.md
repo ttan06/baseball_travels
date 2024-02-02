@@ -22,3 +22,32 @@
   * Tim does not have technical skills but has background knowledge of baseball and the specifics of games
   * Ananya does not have technical skills but has background knowledge of travel trends and costs
   * Alex has technical skills in programming and UI development
+
+## Use Cases
+
+#### Receive Schedules and Routes
+* Objective: 
+  * To provide user with options for schedules and routes based on user inputs
+* User:
+  * User inputs teams and dates on web application interface
+* System:
+  * Runs algorithm based on inputted parameters and provides 1 option
+* User:
+  * Not satisfied with option, clicks on "next option"
+* System:
+  * Goes to next schedule/route. 
+  
+#### View Route on Map and Costs
+* Objective:
+  * To visualize routes on a map and provide costs per route
+* System:
+  * Provides routes on a map
+* User:
+  * User hovers over route with mouse
+* System:
+  * Displays cost of route/sub-route
+* User:
+  * Scrolls
+* System: 
+  * Zooms in
+
