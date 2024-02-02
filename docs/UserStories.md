@@ -50,4 +50,27 @@
   * Scrolls
 * System: 
   * Zooms in
+  
+## Components
+
+### Receive Schedules and Routes
+* Database with schedule and route data
+* User interface with team and date selects
+* Control logic
+
+#### Control Logic
+* Name
+  * scheduleFinder
+* What it does
+  * Finds schedules and routes based on inputted parameters
+* Inputs
+  * Teams, a list of desired home teams/stadiums to visit
+  * StartDate, a starting date for which to find schedules - datetime object
+  * EndDate, an ending date for which to find schedules - datetime object
+* Outputs
+  * Data Frame: ordered data frame with games, dates, cost, distance
+* Assumptions
+  * Home games exist during time duration for selected teams
+
+
 
