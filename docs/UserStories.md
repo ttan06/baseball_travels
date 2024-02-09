@@ -53,6 +53,12 @@
   
 ## Components
 
+### Input Handling
+* User interface that handles user inputs
+* Takes in parameters from UI that are inputted by user
+* Applies inputted parameters to schedule/route to check legality
+* Output parameters to route generator to check legality
+
 ### Receive Schedules and Routes
 * Database with schedule and route data
 * User interface with team and date selects
@@ -71,6 +77,10 @@
   * Data Frame: ordered data frame with games, dates, cost, distance
 * Assumptions
   * Home games exist during time duration for selected teams
-
-
+  
+### Map and Route Visualizer
+* Takes in different legal routes in the form of directed graph
+* Displays route on map using coordinates
+* Outputs visualized map and table displaying routes
+* Has toggle that can change route, and both map and table are updated
 
