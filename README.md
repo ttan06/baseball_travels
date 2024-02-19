@@ -36,3 +36,23 @@ Ticket Data:
 
 Flight Data: 
 * https://www.flightconnections.com/airlines
+
+## How to run app
+
+The following packages need to be installed before running the app :
+
+* plotly : pip3 install plotly
+* pandas : pip3 install pandas
+* dash : pip3 install dash
+
+
+To start the app just run the command below in your terminal at baseball_travels : 
+
+```
+python3 app.py
+```
+
+After running the app, open the link provided from the terminal in your browser. Then select the teams from the drop down list you would like to visit then view the paths to take. 
+
+
+
