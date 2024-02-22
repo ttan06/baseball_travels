@@ -77,13 +77,13 @@ def schedule_builder(teamGames, route):
         final_sched.append(g[0])
     final_sched = pd.DataFrame(final_sched, columns=col_names)
 
-    return final_sched[['date', 'time', 'away team', 'home team']]
+    return final_sched[['date', 'time', 'away team', 'home team', 'Latitude', 'Longitude']]
 
-schedule = pd.read_csv('final_mlb_schedule.csv')
-schedule['date'] = pd.to_datetime(schedule['date'])
-teamlist = ['Texas Rangers','Colorado Rockies', 'Baltimore Orioles','Detroit Tigers','Minnesota Twins', 'St. Louis Cardinals', 'Tampa Bay Rays']
-r1 = route_creator(schedule, teamlist, '05-10-2024', '06-30-2024', 1)
-g1 = game_finder(schedule, r1[0], '05-10-2024', '06-30-2024')
-print(schedule_builder(g1, r1[0]))
+# schedule = pd.read_csv('final_mlb_schedule.csv')
+# schedule['date'] = pd.to_datetime(schedule['date'])
+# teamlist = ['Texas Rangers','Colorado Rockies', 'Baltimore Orioles','Detroit Tigers','Minnesota Twins', 'St. Louis Cardinals', 'Tampa Bay Rays']
+# r1 = route_creator(schedule, teamlist, '05-10-2024', '06-30-2024', 1)
+# g1 = game_finder(schedule, r1[0], '05-10-2024', '06-30-2024')
+# print(schedule_builder(g1, r1[0]))
 
 
