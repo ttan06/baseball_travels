@@ -9,4 +9,4 @@ dependencies:
   - plotly
   - dash
   - pandas
-  - python_tsp
+#  - python_tsp
