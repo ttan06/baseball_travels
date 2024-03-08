@@ -87,7 +87,7 @@ jobs:
       # Next step: run pylint. Anything less than 10/10 will fail.
       - name: Lint with pylint
         run: |
-          pylint makeRoute/**/*.py
+          pylint makeRoute/*.py
           pylint app.py
 
       # Next step: run the unit tests with code coverage.
