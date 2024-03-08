@@ -1,30 +1,35 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
+requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "baseball_travel"
+version = "0.0.1"
 authors = [
-    {name = "Alexander Schad", email = "agschad@uw.edu"},
+    {name = "Alexander Schad"},
+    {name = "Timothy Tan"},
+    {name = "Ananya Bajaj"},
 ]
-description = "My package description"
+description = "MLB Traveling example"
 readme = "README.md"
 requires-python = ">=3.8"
-keywords = ["one", "two"]
+
 license = {text = "BSD-3-Clause"}
+
 classifiers = [
-    "Framework :: Django",
     "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
 ]
-dependencies = [
-    "requests",
-    'importlib-metadata; python_version<"3.10"',
-]
-dynamic = ["version"]
+dynamic = ["dependencies"]
 
-[project.optional-dependencies]
-pdf = ["ReportLab>=1.2", "RXP"]
-rest = ["docutils>=0.3", "pack ==1.1, ==1.3"]
+# In conjunction with the "dynamic" option above in the "project"
+# section, this tells the build system to add any dependencies
+# specified in requirements.txt.
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
 
-[project.scripts]
-my-script = "my_package.module:function"
+# Where can someone find out more about your project?
+[project.urls]
+Homepage = "https://github.com/ttan06/baseball_travels"
+Issues = "https://github.com/ttan06/baseball_travels/issues"
