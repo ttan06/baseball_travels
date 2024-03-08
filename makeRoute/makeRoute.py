@@ -5,6 +5,10 @@ from python_tsp.distances import great_circle_distance_matrix
 from python_tsp.exact import solve_tsp_dynamic_programming
 from python_tsp.heuristics import solve_tsp_simulated_annealing
 
+def reduce_schedule(schedule, teams, start_date, end_date):
+    sched_subset = schedule.loc[(schedule['date'] >= start_date) & (schedule['date'] <= end_date)]
+    sched_subset = sched_subset.loc[schedule['home team'].isin(teams)]
+    return sched_subset
 
 def home_game_exists(schedule,  # pandas data frame
                      team,  # string
@@ -50,7 +54,7 @@ def route_creator(schedule, teams, start_dt, end_dt, num_routes=1):
     return routes
 
 def route_creator_exahustive(schedule, teams, start_dt, end_dt, num_routes=1):
-    
+    return None
 
 def game_finder(schedule, route, start_dt, end_dt):
     # sched_list = []
@@ -83,9 +87,12 @@ def schedule_builder(teamGames, route):
 
     return final_sched[['date', 'time', 'away team', 'home team', 'Latitude', 'Longitude']]
 
-# schedule = pd.read_csv('final_mlb_schedule.csv')
-# schedule['date'] = pd.to_datetime(schedule['date'])
-# teamlist = ['Texas Rangers','Colorado Rockies', 'Baltimore Orioles','Detroit Tigers','Minnesota Twins', 'St. Louis Cardinals', 'Tampa Bay Rays']
+schedule = pd.read_csv('final_mlb_schedule.csv')
+schedule['date'] = pd.to_datetime(schedule['date'])
+teamlist = ['Texas Rangers','Colorado Rockies', 'Baltimore Orioles','Detroit Tigers','Minnesota Twins', 'St. Louis Cardinals', 'Tampa Bay Rays']
+
+print(reduce_schedule(schedule, teamlist, '05-10-2024', '06-30-2024'))
+
 # r1 = route_creator(schedule, teamlist, '05-10-2024', '06-30-2024', 1)
 # g1 = game_finder(schedule, r1[0], '05-10-2024', '06-30-2024')
 # print(schedule_builder(g1, r1[0]))
