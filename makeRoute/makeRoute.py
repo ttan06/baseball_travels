@@ -49,6 +49,8 @@ def route_creator(schedule, teams, start_dt, end_dt, num_routes=1):
 
     return routes
 
+def route_creator_exahustive(schedule, teams, start_dt, end_dt, num_routes=1):
+    
 
 def game_finder(schedule, route, start_dt, end_dt):
     # sched_list = []
@@ -71,6 +73,8 @@ def schedule_builder(teamGames, route):
         gameOptions = games.loc[games['date'] > min_date].sort_values(by=['date'])
         min_game = gameOptions.head(1)
         sched.append(min_game.values.tolist())
+        if (len(min_game['date'])==0):
+            raise ValueError(str(team)+' has no games after ' + str(min_date))
         min_date = list(min_game['date'])[0]
     final_sched = []
     for g in sched:

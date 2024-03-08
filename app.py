@@ -117,15 +117,17 @@ def update_graph(value, start_date, end_date):
 )
 
 def update_table(value, start_date, end_date):
+    sched = df.copy()
     if value is None:
         return no_update
     elif len(value) < 3:
         return no_update
-    teamlist = value  # ['Texas Rangers', 'Colorado Rockies', 'Baltimore Orioles', 'Detroit Tigers', 'Minnesota Twins', 'St. Louis Cardinals', 'Tampa Bay Rays']
-    r1 = route_creator(schedule, teamlist, start_date, end_date, 1)
-    g1 = game_finder(schedule, r1[0], start_date, end_date)
-    sched = (schedule_builder(g1, r1[0]))
-    sched = sched[['date', 'time', 'away team', 'home team']]
+    else:
+        teamlist = value  # ['Texas Rangers', 'Colorado Rockies', 'Baltimore Orioles', 'Detroit Tigers', 'Minnesota Twins', 'St. Louis Cardinals', 'Tampa Bay Rays']
+        r1 = route_creator(schedule, teamlist, start_date, end_date, 1)
+        g1 = game_finder(schedule, r1[0], start_date, end_date)
+        sched = (schedule_builder(g1, r1[0]))
+        sched = sched[['date', 'time', 'away team', 'home team']]
     return sched.to_dict("records")
 
 if __name__ == '__main__':
