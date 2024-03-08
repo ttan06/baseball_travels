@@ -130,6 +130,7 @@ def update_graph(value, start_date, end_date):
     for x in order :
         order_final.append(str(x+1))
 
+    sched['date'] = pd.to_datetime(sched['date'])
     sched['date'] = sched['date'].dt.strftime('%m-%d-%Y')
     dates = sched['date'].tolist()
     time = sched['time'].tolist()
