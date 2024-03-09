@@ -5,7 +5,8 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import numpy as np
 from datetime import date
-from makeRoute.makeRoute import route_creator, game_finder, schedule_builder
+#from makeRoute.makeRoute import route_creator#, game_finder, schedule_builder
+from makeRoute.exhaustiveSearch import reduce_routes, reduce_schedule, sort_order, find_all_routes
 
 df = pd.read_csv('data/final_mlb_schedule.csv')
 
@@ -78,7 +79,16 @@ selection_sidebar = html.Div([
         np.sort(df['home team'].unique()),
         multi=True, 
         id='dropdown-selection',
-        placeholder="Select teams you wish to visit")],
+        placeholder="Select teams you wish to visit"),
+    dcc.RadioItems(
+        options=[
+            {'label': 'Time', 'value': 'time'},
+            {'label': 'Distance', 'value': 'distance'},
+            {'label': 'Cost', 'value': 'cost'},
+        ],
+        value='Time',
+        id='prioritize')
+    ],
         style=SIDEBAR_STYLE,)
 
 content = html.Div([    dcc.Graph(figure=fig,id='graph-content'),
@@ -95,10 +105,11 @@ app.layout = html.Div([html.H1(children='Baseball Travel', style={'textAlign':'c
     Output('graph-content', 'figure'),
     Input('dropdown-selection', 'value'),
     Input('date-selection', 'start_date'),
-    Input('date-selection', 'end_date')
+    Input('date-selection', 'end_date'),
+    Input('prioritize', 'value')
 )
 # Updates graph based on the selection from the drop down list
-def update_graph(value, start_date, end_date):
+def update_graph(teams, start_date, end_date, sort_method):
     dff = df.copy()
     dff = dff.groupby('home team').first().reset_index()
 
@@ -109,16 +120,19 @@ def update_graph(value, start_date, end_date):
     # else :
     #     # dff = dff[dff['home team'].isin([]])]
 
-    if value is None:
+    if teams is None:
 
         sched = sched[sched['home team'].isin([])]
-    elif len(value) < 3:
+    elif len(teams) < 2:
         sched = sched[sched['home team'].isin([])]
     else :
-        teamlist = value  # ['Texas Rangers', 'Colorado Rockies', 'Baltimore Orioles', 'Detroit Tigers', 'Minnesota Twins', 'St. Louis Cardinals', 'Tampa Bay Rays']
-        r1 = route_creator(schedule, teamlist, start_date, end_date, 1)
-        g1 = game_finder(schedule, r1[0], start_date, end_date)
-        sched = (schedule_builder(g1, r1[0]))
+        teamlist = teams  # ['Texas Rangers', 'Colorado Rockies', 'Baltimore Orioles', 'Detroit Tigers', 'Minnesota Twins', 'St. Louis Cardinals', 'Tampa Bay Rays']
+        #r1 = route_creator(schedule, teamlist, start_date, end_date, 1)
+        short_sched = reduce_schedule(schedule, teamlist, start_date, end_date)
+        routes = find_all_routes(teamlist)
+        route_df = reduce_routes(routes, short_sched)
+        sorted_route = sort_order(route_df, sort_method)
+        sched = sorted_route['games'][0]
 
 
     team_lons = sched['Longitude'].tolist()
@@ -213,18 +227,23 @@ def update_graph(value, start_date, end_date):
     Output('table', 'data'),
     Input('dropdown-selection', 'value'),
     Input('date-selection', 'start_date'),
-    Input('date-selection', 'end_date')
+    Input('date-selection', 'end_date'),
+    Input('prioritize', 'value')
 )
 
-def update_table(value, start_date, end_date):
-    if value is None:
+def update_table(teams, start_date, end_date, sort_method):
+    if teams is None:
         return no_update
-    elif len(value) < 3:
+    elif len(teams) < 2:
         return no_update
-    teamlist = value  # ['Texas Rangers', 'Colorado Rockies', 'Baltimore Orioles', 'Detroit Tigers', 'Minnesota Twins', 'St. Louis Cardinals', 'Tampa Bay Rays']
-    r1 = route_creator(schedule, teamlist, start_date, end_date, 1)
-    g1 = game_finder(schedule, r1[0], start_date, end_date)
-    sched = (schedule_builder(g1, r1[0]))
+    teamlist = teams  # ['Texas Rangers', 'Colorado Rockies', 'Baltimore Orioles', 'Detroit Tigers', 'Minnesota Twins', 'St. Louis Cardinals', 'Tampa Bay Rays']
+    # r1 = route_creator(schedule, teamlist, start_date, end_date, 1)
+    # g1 = game_finder(schedule, r1[0], start_date, end_date)
+    short_sched = reduce_schedule(schedule, teamlist, start_date, end_date)
+    routes = find_all_routes(teamlist)
+    route_df = reduce_routes(routes, short_sched)
+    sorted_route = sort_order(route_df, sort_method)
+    sched = sorted_route['games'][0]
     sched = sched[['date', 'time', 'away team', 'home team']]
     sched['date'] = sched['date'].dt.strftime('%m-%d-%Y')
     return sched.to_dict("records")
