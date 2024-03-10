@@ -22,6 +22,9 @@ def dist(x, y):
 
     distance = R * c
 
+    # convert to miles
+    distance = distance/1.609344
+
     return round(distance, 4)
 
 def dist_matrix(lat_long_df):
