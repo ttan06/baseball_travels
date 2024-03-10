@@ -2,6 +2,10 @@
 This module implements dist and dist_matrix, functions that calculate distances between two points
 and build a distance matrix for multiple points.
 
+dist(x, y): function to compute geographic distance in miles between two points.
+
+dist_matrix(lat_long_df): function to compute distance matrix for data frame of points.
+
 It requires the packages math, scipy, and pandas to run.
 """
 
