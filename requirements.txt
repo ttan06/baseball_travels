@@ -14,3 +14,4 @@ dash-table==5.0.0
 pandas==2.2.0
 python_tsp==0.4.1
 scipy
+itertools
