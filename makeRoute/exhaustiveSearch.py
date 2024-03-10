@@ -63,10 +63,10 @@ def check_valid_route(route, schedule):
     final_sched = pd.DataFrame(final_sched, columns=col_names)
     total_days = (list(final_sched['date'])[-1] - final_sched['date'][0]).days + 1
     if len(final_sched) == 0:
-        raise ValueError('No Possible Routes')
+        raise ValueError('No Possible Games')
     return True, final_sched[['date', 'time', 'away team', 'home team', 'Latitude', 'Longitude']], total_days
 
-def reduce_routes(routes, schedule):
+def reduce_routes(routes, schedule, cost_df):
     reduced_routes = []
     game_order = []
     trip_length = []
@@ -75,8 +75,7 @@ def reduce_routes(routes, schedule):
     for route in routes:
         validity, valid_route, total_days = check_valid_route(route, schedule)
         distance = calculate_distance(route, schedule)
-        # cost = calculate_cost(route, schedule)
-        cost = 0
+        cost = calculate_cost(route, cost_df)
         if validity != False:
             reduced_routes.append(route)
             game_order.append(valid_route)
@@ -115,7 +114,17 @@ def calculate_distance(route, schedule):
     for i in range(len(route)):
         if i+1 < len(route):
             total_dist += dist_matrix[i][i+1]
-    return total_dist
+    return round(total_dist)
+
+def calculate_cost(route, cost_df):
+    total_cost = 0
+    for i in range(len(route)):
+        if i+1 < len(route):
+            cost = cost_df.loc[
+                (cost_df['Team1'] == route[i]) & (cost_df['Team2'] == route[i+1])].reset_index()['fare'][0]
+            total_cost += cost
+    return round(total_cost, 2)
+
 
 # def sort_distance(routes, schedule, games):
 #     """
@@ -153,27 +162,24 @@ def sort_order(route_df, method = 'distance'):
     else:
         raise ValueError('Invalid Sort')
 
-# schedule = pd.read_csv('data/final_mlb_schedule.csv')
-# schedule['date'] = pd.to_datetime(schedule['date'])
-# teamlist = ['Texas Rangers','Colorado Rockies', 'Baltimore Orioles', 'Seattle Mariners']#, 'Miami Marlins', 'Los Angeles Angels']
-
-# x=schedule['date'][0]
-# y=schedule['date'][1000]
-# dif = y-x
-# print(x)
-# print(y)
-# print(dif.days)
-
-# short_sched = reduce_schedule(schedule, teamlist, '05-10-2024', '06-30-2024')
+# schedulee = pd.read_csv('data/final_mlb_schedule.csv')
+# schedulee['date'] = pd.to_datetime(schedulee['date'])
+# teamlist = ['Texas Rangers', 'Colorado Rockies', 'Baltimore Orioles', 'Seattle Mariners']#, 'Miami Marlins', 'Los Angeles Angels']
+# cost_dfx = pd.read_csv('data/cost_df.csv')
+#
+# # x=schedule['date'][0]
+# # y=schedule['date'][1000]
+# # dif = y-x
+# # print(x)
+# # print(y)
+# # print(dif.days)
+#
+# short_sched = reduce_schedule(schedulee, teamlist, '05-10-2024', '06-30-2024')
 # routes = find_all_routes(teamlist)
-# route_df = reduce_routes(routes, short_sched)
-# print(route_df)
-# sorted_route = sort_order(route_df, 'time')
+# route_df = reduce_routes(routes, short_sched, cost_dfx)
+# sorted_route = sort_order(route_df, 'distance')
 # print(sorted_route)
 #
 # print(game_finder(short_sched, routes['route'][0]))
 
-# print(routes)
-# print(routes.head(1))
-# print(routes['route'][0])
 
