@@ -122,8 +122,8 @@ def check_valid_route(route, schedule):
             return False, pd.DataFrame, 0
         min_date = list(min_game['date'])[0]
     final_sched = []
-    for g in sched:
-        final_sched.append(g[0])
+    for game in sched:
+        final_sched.append(game[0])
     final_sched = pd.DataFrame(final_sched, columns=col_names)
     total_days = (list(final_sched['date'])[-1] - final_sched['date'][0]).days + 1
     if len(final_sched) == 0:
