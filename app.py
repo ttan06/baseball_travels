@@ -123,14 +123,10 @@ def update_graph(teams, start_date, end_date, sort_method):
     # else :
     #     # dff = dff[dff['home team'].isin([]])]
 
-    if teams is None:
-
-        sched = sched[sched['home team'].isin([])]
-    elif len(teams) < 2:
+    if teams is None or len(teams) < 2:
         sched = sched[sched['home team'].isin([])]
     else:
-        teamlist = teams  # ['Texas Rangers', 'Colorado Rockies', 'Baltimore Orioles', 'Detroit Tigers', 'Minnesota Twins', 'St. Louis Cardinals', 'Tampa Bay Rays']
-        # r1 = route_creator(schedule, teamlist, start_date, end_date, 1)
+        teamlist = teams
         short_sched = reduce_schedule(schedule, teamlist, start_date, end_date)
         routes = find_all_routes(teamlist)
         route_df = reduce_routes(routes, short_sched, cost_dfx)
@@ -231,13 +227,9 @@ def update_graph(teams, start_date, end_date, sort_method):
     Input('prioritize', 'value')
 )
 def update_table(teams, start_date, end_date, sort_method):
-    if teams is None:
+    if teams is None or len(teams) < 2:
         return no_update
-    elif len(teams) < 2:
-        return no_update
-    teamlist = teams  # ['Texas Rangers', 'Colorado Rockies', 'Baltimore Orioles', 'Detroit Tigers', 'Minnesota Twins', 'St. Louis Cardinals', 'Tampa Bay Rays']
-    # r1 = route_creator(schedule, teamlist, start_date, end_date, 1)
-    # g1 = game_finder(schedule, r1[0], start_date, end_date)
+    teamlist = teams
     short_sched = reduce_schedule(schedule, teamlist, start_date, end_date)
     routes = find_all_routes(teamlist)
     route_df = reduce_routes(routes, short_sched, cost_dfx)
@@ -256,13 +248,9 @@ def update_table(teams, start_date, end_date, sort_method):
     Input('prioritize', 'value')
 )
 def update_table(teams, start_date, end_date, sort_method):
-    if teams is None:
+    if teams is None or len(teams) < 2:
         return no_update
-    elif len(teams) < 2:
-        return no_update
-    teamlist = teams  # ['Texas Rangers', 'Colorado Rockies', 'Baltimore Orioles', 'Detroit Tigers', 'Minnesota Twins', 'St. Louis Cardinals', 'Tampa Bay Rays']
-    # r1 = route_creator(schedule, teamlist, start_date, end_date, 1)
-    # g1 = game_finder(schedule, r1[0], start_date, end_date)
+    teamlist = teams
     short_sched = reduce_schedule(schedule, teamlist, start_date, end_date)
     routes = find_all_routes(teamlist)
     route_df = reduce_routes(routes, short_sched, cost_dfx)
@@ -273,7 +261,6 @@ def update_table(teams, start_date, end_date, sort_method):
     totals = pd.DataFrame({'Metric': metrics, 'Total': metric_val})
 
     return totals.to_dict("records")
-
 
 if __name__ == '__main__':
     app.run(debug=False)

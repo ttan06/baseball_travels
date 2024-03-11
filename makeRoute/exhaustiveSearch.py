@@ -167,29 +167,6 @@ def reduce_routes(routes, schedule, cost_df):
                                       'cost': costs})
     return all_route_options
 
-# def schedule_builder(route, schedule):
-#     teamGames = game_finder(schedule, route)
-#     first_Team = teamGames[route[0]].reset_index()
-#     col_names = first_Team.columns
-#     sched = []
-#     team1Earliest = first_Team.head(1)
-#     min_date = team1Earliest['date'][0]
-#     sched.append(team1Earliest.values.tolist())
-#     for team in route[1:]:
-#         games = teamGames[team].reset_index()
-#         gameOptions = games.loc[games['date'] > min_date].sort_values(by=['date'])
-#         min_game = gameOptions.head(1)
-#         sched.append(min_game.values.tolist())
-#         if (len(min_game['date'])==0):
-#             raise ValueError(str(team)+' has no games after ' + str(min_date))
-#         min_date = list(min_game['date'])[0]
-#     final_sched = []
-#     for g in sched:
-#         final_sched.append(g[0])
-#     final_sched = pd.DataFrame(final_sched, columns=col_names)
-#
-#     return final_sched[['date', 'time', 'away team', 'home team', 'Latitude', 'Longitude']]
-
 def calculate_distance(route, schedule):
     """
     Function that calculates total distance of the route using the
@@ -225,23 +202,6 @@ def calculate_cost(route, cost_df):
             total_cost += cost
     return round(total_cost, 2)
 
-
-# def sort_distance(routes, schedule, games):
-#     """
-#
-#     :param routes:
-#     :param schedule:
-#     :return: pandas data frame of route, distance
-#     """
-#     distances = []
-#     for route in routes:
-#         distances.append(calculate_distance(route, schedule))
-#     route_df = pd.DataFrame({'route': routes, 'dist': distances})
-#     route_df = route_df.sort_values(by=['dist'], ascending = True)
-#     route_df = route_df.reset_index()
-#
-#     return route_df[['route', 'dist']]
-
 def sort_order(route_df, method='distance'):
     """
     Function that sorts the routes by the desired method, either distance, cost or time.
@@ -266,24 +226,3 @@ def sort_order(route_df, method='distance'):
         sorted_route_df = sorted_route_df.drop(columns=['index'])
         return sorted_route_df
     raise ValueError('Invalid Sort')
-
-# schedulee = pd.read_csv('data/final_mlb_schedule.csv')
-# schedulee['date'] = pd.to_datetime(schedulee['date'])
-# teamlist = ['Texas Rangers', 'Colorado Rockies', 'Baltimore Orioles',
-# 'Seattle Mariners']#, 'Miami Marlins', 'Los Angeles Angels']
-# cost_dfx = pd.read_csv('data/cost_df.csv')
-#
-# # x=schedule['date'][0]
-# # y=schedule['date'][1000]
-# # dif = y-x
-# # print(x)
-# # print(y)
-# # print(dif.days)
-#
-# short_sched = reduce_schedule(schedulee, teamlist, '05-10-2024', '06-30-2024')
-# routes = find_all_routes(teamlist)
-# route_df = reduce_routes(routes, short_sched, cost_dfx)
-# sorted_route = sort_order(route_df, 'distance')
-# print(sorted_route)
-#
-# print(game_finder(short_sched, routes['route'][0]))
