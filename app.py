@@ -1,4 +1,5 @@
 from dash import Dash, html, dcc, callback, Output, Input, dash_table, no_update
+from dash.exceptions import PreventUpdate
 import plotly.express as px
 import plotly.graph_objects as go
 import dash_bootstrap_components as dbc
@@ -13,7 +14,6 @@ cost_dfx = pd.read_csv('data/cost_df.csv')
 
 schedule = df.copy()
 schedule['date'] = pd.to_datetime(schedule['date'])
-print(schedule['home team'].unique().tolist())
 
 # Original graph with no paths added
 fig = go.Figure(go.Scattermapbox(
@@ -41,67 +41,108 @@ SIDEBAR_STYLE = {
     "padding": "2rem 1rem",
     "background-color": "#f8f9fa",
 }
-# sidebar = html.Div(
-#     [
-#         html.H2("Sidebar", className="display-4"),
-#         html.Hr(),
-#         html.P(
-#             "A simple sidebar layout with navigation links", className="lead"
-#         ),
-#         dbc.Nav(
-#             [
-#                 dbc.NavLink("Home", href="/", active="exact"),
-#                 dbc.NavLink("Page 1", href="/page-1", active="exact"),
-#                 dbc.NavLink("Page 2", href="/page-2", active="exact"),
-#             ],
-#             vertical=True,
-#             pills=True,
-#         ),
-#     ],
-#     style=SIDEBAR_STYLE,
-# )
+
 CONTENT_STYLE = {
     "margin-left": "22rem",
     "margin-right": "2rem",
     "padding": "2rem 1rem",
 }
 
-selection_sidebar = html.Div([
-    dash_table.DataTable(id='total_table'),
-    dcc.DatePickerRange(
-        # date range
-        id='date-selection',
-        min_date_allowed=date(2024, 3, 20),
-        max_date_allowed=date(2024, 9, 29),
-        initial_visible_month=date(2024, 3, 20),
-        # end_date=date(2024, 9, 29)
-    ),
-    dcc.Dropdown(
-        # Shows all teams in a drop down list to choose from
-        np.sort(df['home team'].unique()),
-        multi=True,
-        id='dropdown-selection',
-        placeholder="Select teams you wish to visit"),
-    dcc.RadioItems(
-        options=[
-            {'label': 'Time', 'value': 'time'},
-            {'label': 'Distance', 'value': 'distance'},
-            {'label': 'Cost', 'value': 'cost'},
-        ],
-        value='Time',
-        id='prioritize',
-        inline=True
-    )
-],
-    style=SIDEBAR_STYLE, )
+def create_sidebar(error_text=None) : 
+    date_picker = dcc.DatePickerRange(
+            # date range
+            id='date-selection',
+            min_date_allowed=date(2024, 3, 20),
+            max_date_allowed=date(2024, 9, 29),
+            initial_visible_month=date(2024, 3, 20),
+            # end_date=date(2024, 9, 29)
+        )
+    dropdown = dcc.Dropdown(
+            # Shows all teams in a drop down list to choose from
+            np.sort(df['home team'].unique()).tolist(),
+            multi=True,
+            id='dropdown-selection',
+            placeholder="Select teams you wish to visit")
+    metrics_label = html.H5('Optimize for: ',style={"margin-top": "15px"})
+    radio_items = dcc.RadioItems(
+            options=[
+                {'label': 'Time', 'value': 'time'},
+                {'label': 'Distance', 'value': 'distance'},
+                {'label': 'Cost', 'value': 'cost'},
+            ],
+            value='Time',
+            id='prioritize',
+            #inline=True
+        )
+    total_table = dash_table.DataTable(id='total_table')
+
+    if error_text is None :
+        return html.Div([
+        date_picker,
+        dropdown,
+        metrics_label,
+        radio_items,
+        total_table
+    ],
+        style=SIDEBAR_STYLE)
+    # else :
+    #     print('IT SHOULD STOP SHOWING')
+    #     return html.Div([
+    #     date_picker,
+    #     dcc.Dropdown(
+    #         # Shows all teams in a drop down list to choose from
+    #         np.sort(df['home team'].unique()),
+    #         multi=True,
+    #         id='dropdown-selection',
+    #         placeholder="Max number of teams selected",
+    #         disabled=True
+    #     ),
+    #     metrics_label,
+    #     radio_items,
+    #     total_table
+    # ],
+    #     style=SIDEBAR_STYLE, id='sidebar')
+        
+
+selection_sidebar = create_sidebar()
 
 content = html.Div([dcc.Graph(figure=fig, id='graph-content'),
-                    dash_table.DataTable(id='table')]
+                    dash_table.DataTable(id='table'),
+                    dcc.Store(id='remaining_team_list', storage_type='memory',data=np.sort(df['home team'].unique()).tolist()),]
                    , style=CONTENT_STYLE)
 
 app.layout = html.Div([html.H1(children='Baseball Travel', style={'textAlign': 'center'}),
                        selection_sidebar, content
                        ])
+
+
+# @callback(
+#     [
+#         Output('dropdown-selection','options'),
+#         Output('remaining_team_list','data')
+#     ],
+#     Input('dropdown-selection', 'value'),
+#     Input('dropdown-selection', 'options'),
+#     Input('remaining_team_list', 'data'),
+
+#     prevent_initial_call=True)
+# def update_dropdown(teams_selected, teams,remaining_teams):
+#     if teams_selected is not None and len(teams_selected) > 6 :
+#         print(len(teams_selected),'selected teams')
+#         print(len(teams),'teams left for options')
+#         print(len(remaining_teams),'stored remaining teams')
+
+#         return teams_selected,remaining_teams
+#     else :
+#         #remaining_teams = [i for i in remaining_teams if i not in teams_selected]
+#         print(len(teams_selected),'selected teams')
+#         print(len(teams),'teams left for options')
+#         print(len(remaining_teams),'stored remaining teams')
+#         return teams, remaining_teams#[{'label':team, 'value':team} for team in teams]
+#     # else :
+#     #     return create_sidebar(teams, start_date, end_date, sort_method,error_text=None)
+   
+
 
 
 @callback(
@@ -117,11 +158,6 @@ def update_graph(teams, start_date, end_date, sort_method):
     dff = dff.groupby('home team').first().reset_index()
 
     sched = df.copy()
-
-    # if value is not None:
-    #     # dff = dff[dff['home team'].isin(value)]
-    # else :
-    #     # dff = dff[dff['home team'].isin([]])]
 
     if teams is None or len(teams) < 2:
         sched = sched[sched['home team'].isin([])]
@@ -194,26 +230,13 @@ def update_graph(teams, start_date, end_date, sort_method):
         fig.add_layout_image(
             dict(
                 source=team_to_image_map[team],
-                # xref="x domain",
-                # yref="y domain",
-                # xanchor="right",
-                # yanchor="top",
+
                 x=1,
                 y=1,
-                # sizex=2,
-                # sizey=2,
-                # sizing="contain",
-                # opacity=1.0,
+               
                 layer="above",
             )
-            # layout=go.Layout(
-            #                 xaxis =  {
-            #                     'showgrid': False
-            #                          },
-            #                 yaxis = {
-            #                    'showgrid': True
-            #                         })
-            # ),
+            
         )
 
     return fig
@@ -226,7 +249,7 @@ def update_graph(teams, start_date, end_date, sort_method):
     Input('date-selection', 'end_date'),
     Input('prioritize', 'value')
 )
-def update_table(teams, start_date, end_date, sort_method):
+def update_game_schedule_table(teams, start_date, end_date, sort_method):
     if teams is None or len(teams) < 2:
         return no_update
     teamlist = teams
@@ -247,12 +270,22 @@ def update_table(teams, start_date, end_date, sort_method):
     Input('date-selection', 'end_date'),
     Input('prioritize', 'value')
 )
-def update_table(teams, start_date, end_date, sort_method):
+def update_sidebar_metrics_table(teams, start_date, end_date, sort_method):
     if teams is None or len(teams) < 2:
         return no_update
     teamlist = teams
     short_sched = reduce_schedule(schedule, teamlist, start_date, end_date)
     routes = find_all_routes(teamlist)
+    # routes = []
+
+    # try: 
+    #     routes = find_all_routes(teamlist)
+    
+    # # Value Error should be returned if too many teams are selected
+    # except ValueError :
+
+
+
     route_df = reduce_routes(routes, short_sched, cost_dfx)
     sorted_route = sort_order(route_df, sort_method)
     metrics = ['Time', 'Distance', 'Travel Cost']
@@ -263,4 +296,5 @@ def update_table(teams, start_date, end_date, sort_method):
     return totals.to_dict("records")
 
 if __name__ == '__main__':
+    # temp change to debug
     app.run(debug=False)
