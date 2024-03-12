@@ -4,6 +4,7 @@ Script that creates a cost matrix from the Consumer Airfare Report data
 Download the base dataset as a csv from:
 https://data.transportation.gov/Aviation/Consumer-Airfare-Report-Table-6-Contiguous-State-C/yj5y-b2ir/data
 
+Also uses team airport key.
 
 Run using 'python -m data/create_cost_matrix.py' from in terminal from root repo
 
