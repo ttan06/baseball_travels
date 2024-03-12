@@ -2,6 +2,8 @@
 This module implements various functions to build a route of games for a user to travel through.
 
 Functions:
+home_game_exists(schedule, team): Function that takes in a team and a schedule and
+    finds if the team has a game in that schedule
 reduce_schedule(schedule, teams, start_date, end_date): function that creates a subset
     of the MLB schedule
 find_all_routes(teams): Function that provides all route combinations for teams.
@@ -24,6 +26,20 @@ from itertools import permutations
 import pandas as pd
 from .distance import dist_matrix
 
+def home_game_exists(schedule, team):
+    """
+    Function that takes in a team and a schedule and finds if the team has a game in
+        that schedule
+    :param schedule: pandas data frame - contains every game for the MLB season
+        with teams, location, etc.
+    :param team: string - team name
+    :return: boolean - returns true if home team has a game in the schedule
+    """
+    for home_team in schedule["home team"]:
+        if home_team == team:
+            return True
+    return False
+
 def reduce_schedule(schedule, teams, start_date, end_date):
     """
     Function that takes in teams and a date range to create a subset of the MLB schedule
@@ -35,18 +51,23 @@ def reduce_schedule(schedule, teams, start_date, end_date):
     :return: sched_subset: data frame - filtered subset of MLB schedule for
         specific teams and between dates
     """
+    if (pd.to_datetime(end_date) - pd.to_datetime(start_date)).days + 1 < len(teams):
+        raise ValueError('More teams than days')
     sched_subset = schedule.loc[(schedule['date'] >= start_date) & (schedule['date'] <= end_date)]
+    for tm in teams:
+        if home_game_exists(sched_subset, tm) is False:
+            raise ValueError(tm + ' do not have a home game in this time frame')
     sched_subset = sched_subset.loc[schedule['home team'].isin(teams)]
     return sched_subset
 
 def find_all_routes(teams):
     """
     Function that provides all route combinations for teams. Raises an error if there are more
-        than 7 teams, to reduce runtime
+        than 6 teams, to reduce runtime
     :param teams: list - list of teams
     :return: list: list of routes, where a route is a list of teams in a specific order
     """
-    if len(teams) > 7:
+    if len(teams) > 6:
         raise ValueError('Too many selections')
     routes = [list(route) for route in permutations(teams)]
     return routes
