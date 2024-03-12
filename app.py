@@ -144,25 +144,83 @@ def update_graph(teams, start_date, end_date, sort_method):
 
     sched['date'] = pd.to_datetime(sched['date'])
     sched['date'] = sched['date'].dt.strftime('%m-%d-%Y')
+    sched = pd.merge(sched, cost_dfx, how='left', left_on=['home team', 'away team'], right_on=['Team1', 'Team2'])
+    print(sched)
+    
+    # print(cost_dfx)
     dates = sched['date'].tolist()
     time = sched['time'].tolist()
-    hover_data_zipped = list(zip(team_home, team_away, dates, time))
+    costs = [f"${cost:.0f}" for cost in sched['fare'].tolist()]
+    hover_data_zipped = list(zip(team_home, team_away, dates, time, costs))
 
     hover_data_format = []
     for point in hover_data_zipped:
+        print(point)
         hover_data_format.append(f'{point[1]} at {point[0]} on {point[2]} at {point[3]}')
 
-    fig = go.Figure(go.Scattermapbox(
-        mode="markers+lines+text",
-        lon=team_lons,
-        lat=team_lats,
-        hovertext=hover_data_format,
-        hoverinfo="text",
-        text=order_final,
-        textposition='top center',
-        # textposition='TopCenter',
-        marker={'size': 10}))
+    # fig = go.Figure(go.Scattermapbox(
+    #     mode="markers+lines+text",
+    #     lon=team_lons,
+    #     lat=team_lats,
+    #     hovertext=hover_data_format,
+    #     hoverinfo="text",
+    #     text=order_final,
+    #     textposition='top center',
+    #     # textposition='TopCenter',
+    #     marker={'size': 10}))
+        
+    fig = go.Figure()
 
+    fig.add_trace(go.Scattermapbox(
+    mode="markers+lines",  # Include both markers and lines
+    lon=team_lons,        # Longitude for game markers
+    lat=team_lats,        # Latitude for game markers
+    hovertext=hover_data_format,  # Hover text for each game marker
+    hoverinfo="text",     # Show hover text
+    marker={'size': 10},  # Marker size
+    line=dict(width=2)    # Line width
+    ))
+
+
+
+########
+
+    mid_lons = []
+    mid_lats = []
+    for lon1, lat1, lon2, lat2 in zip(team_lons[:-1], team_lats[:-1], team_lons[1:], team_lats[1:]):
+        mid_lons.append((lon1 + lon2) / 2)
+        mid_lats.append((lat1 + lat2) / 2)
+
+    # Next, create your hovertext for the midpoints based on costs
+    midpoint_hover_text = [f'{cost}' for cost in costs[:-1]]  # Exclude the last cost as there's no line segment after the last point
+
+    # Now, add the lines and the markers as separate traces
+    #fig = go.Figure()
+
+    # Add the line trace
+    # fig.add_trace(go.Scattermapbox(
+    #     mode="markers+lines",
+    #     lon=team_lons,
+    #     lat=team_lats,
+    #     marker={'size': 10},
+    #     line=dict(width=2)
+    # ))
+
+    # Add a separate trace for the midpoints with invisible markers
+    fig.add_trace(go.Scattermapbox(
+        mode="markers+text",
+        lon=mid_lons,
+        lat=mid_lats,
+       # text=midpoint_hover_text,
+        text=[f'<br>{text}' for text in midpoint_hover_text],
+        hoverinfo="none",
+        textposition='top center',
+        marker=dict(size=30, color='white',opacity=1),  # Make markers invisible
+        showlegend=False
+    ))
+
+#https://icons.iconarchive.com/icons/icons8/ios7/256/Editing-Rectangle-icon.png
+    
     fig.update_layout(
         margin={'l': 0, 't': 0, 'b': 0, 'r': 0},
         mapbox={
@@ -171,10 +229,15 @@ def update_graph(teams, start_date, end_date, sort_method):
             'zoom': 3},
         font=dict(
             family="Courier New, monospace",
-            size=25,  # Set the font size here
-            color="RebeccaPurple")
+            size=10,  # Set the font size here
+            color="Black")
     )
 
+
+
+
+
+    #########
     team_to_image_map = {
         'San Diego Padres': "", 'Chicago Cubs': "", 'Los Angeles Dodgers': "",
         'Texas Rangers': "", 'Colorado Rockies': "",
@@ -263,4 +326,4 @@ def update_table(teams, start_date, end_date, sort_method):
     return totals.to_dict("records")
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)

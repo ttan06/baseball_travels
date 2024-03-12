@@ -2,6 +2,7 @@
 # $ conda create --name <env> --file <this file>
 # platform: osx-arm64
 
+flask==3.0.2
 contourpy==1.0.6
 numpy==1.26.4
 pylint==3.0.3
@@ -13,5 +14,5 @@ dash-html-components==2.0.0
 dash-table==5.0.0
 pandas==2.2.0
 python_tsp==0.4.1
-scipy
-itertools
+scipy==1.12.0
+more-itertools==10.2.0
