@@ -14,7 +14,7 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import numpy as np
 
-from makeRoute.exhaustiveSearch import (
+from make_route.exhaustive_search import (
     reduce_routes,
     reduce_schedule,
     sort_order,
@@ -26,7 +26,6 @@ cost_dfx = pd.read_csv("data/cost_df.csv")
 
 schedule = df.copy()
 schedule["date"] = pd.to_datetime(schedule["date"])
-# print(schedule["home team"].unique().tolist())
 
 
 fig = go.Figure(
@@ -136,8 +135,7 @@ content = html.Div(
     ],
     style=CONTENT_STYLE,
 )
-# , style={"margin-left": "1000px"}),
-# style={'textAlign': 'center','margin':'auto'})
+
 app.layout = html.Div(
     [
         dbc.Col(selection_sidebar, width=2),
