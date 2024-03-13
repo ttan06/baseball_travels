@@ -34,3 +34,7 @@ The objective of the user interaction is to view the outputted schedules and rou
 
 The expected interactions are that after the user generates schedules, they can view and interact with the map portion of the UI and hover over cities and routes with their map. The system will display the map and other information depending on what the user chooses to view on the UI. 
 
+#### Use Case: Understanding Distance and Cost of Traveling in the US
+The objective of this user interaction is to be able to see how much it costs to travel in the US and how far it may be. 
+
+The expected interactions are for the user to view the table on the bottom left of the dashboard that summarizes the trip.

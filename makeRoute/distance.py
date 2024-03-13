@@ -21,7 +21,8 @@ def dist(x, y):
     :param y: tuple - coordinates of second location
     :return: float - distance in miles bewteen two points
     """
-
+    if len(x) != 2 or len(y) != 2:
+        raise TypeError('Incorrect coordinate shape')
     lat1 = radians(x[0])
     lon1 = radians(x[1])
     lat2 = radians(y[0])
@@ -50,6 +51,12 @@ def dist_matrix(lat_long_df):
     :return: numpy array - shape(n,n) where n is number of rows in lat_long_df.
         each entry is the distance between the row team and column team
     """
+    if 'Latitude' not in lat_long_df.columns or 'Longitude' not in lat_long_df.columns:
+        raise ValueError('No Latitude or Longitude column')
+    if 'home team' not in lat_long_df.columns:
+        raise ValueError('No home team column')
+    if len(lat_long_df) < 1:
+        raise ValueError('Need at least 1 row of data')
     lat_long = lat_long_df[['Latitude', 'Longitude']]
     distances = pdist(lat_long.values, metric=dist)
     points = lat_long_df['home team']
