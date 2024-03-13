@@ -13,6 +13,8 @@ from math import sin, cos, sqrt, atan2, radians
 from scipy.spatial.distance import pdist, squareform
 import pandas as pd
 
+
+# pylint: disable=invalid-name
 def dist(x, y):
     """
     Function to compute the distance between two points x, y. Source:
@@ -22,7 +24,7 @@ def dist(x, y):
     :return: float - distance in miles bewteen two points
     """
     if len(x) != 2 or len(y) != 2:
-        raise TypeError('Incorrect coordinate shape')
+        raise TypeError("Incorrect coordinate shape")
     lat1 = radians(x[0])
     lon1 = radians(x[1])
     lat2 = radians(y[0])
@@ -39,9 +41,10 @@ def dist(x, y):
     distance = r * c
 
     # convert to miles
-    distance = distance/1.609344
+    distance = distance / 1.609344
 
     return round(distance, 4)
+
 
 def dist_matrix(lat_long_df):
     """
@@ -51,14 +54,14 @@ def dist_matrix(lat_long_df):
     :return: numpy array - shape(n,n) where n is number of rows in lat_long_df.
         each entry is the distance between the row team and column team
     """
-    if 'Latitude' not in lat_long_df.columns or 'Longitude' not in lat_long_df.columns:
-        raise ValueError('No Latitude or Longitude column')
-    if 'home team' not in lat_long_df.columns:
-        raise ValueError('No home team column')
+    if "Latitude" not in lat_long_df.columns or "Longitude" not in lat_long_df.columns:
+        raise ValueError("No Latitude or Longitude column")
+    if "home team" not in lat_long_df.columns:
+        raise ValueError("No home team column")
     if len(lat_long_df) < 1:
-        raise ValueError('Need at least 1 row of data')
-    lat_long = lat_long_df[['Latitude', 'Longitude']]
+        raise ValueError("Need at least 1 row of data")
+    lat_long = lat_long_df[["Latitude", "Longitude"]]
     distances = pdist(lat_long.values, metric=dist)
-    points = lat_long_df['home team']
+    points = lat_long_df["home team"]
     result = pd.DataFrame(squareform(distances), columns=points, index=points)
     return result.to_numpy()

@@ -20,6 +20,7 @@ import numpy as np
 import numpy.testing as npt
 from makeRoute.distance import dist, dist_matrix
 
+
 class TestDistance(unittest.TestCase):
     """
     Class where all tests that are called will run and are defined
@@ -46,7 +47,7 @@ class TestDistance(unittest.TestCase):
         """
         Smoke test that tests if dist_matrix functions runs
         """
-        df = pd.DataFrame({'Latitude':[77], 'Longitude':[77], 'home team':['test']})
+        df = pd.DataFrame({"Latitude": [77], "Longitude": [77], "home team": ["test"]})
         dist_matrix(df)
 
     # One Shot Tests
@@ -64,10 +65,15 @@ class TestDistance(unittest.TestCase):
         """
         One shot tests that tests accuracy of dist function
         """
-        df = pd.DataFrame({'Latitude': [77, 100], 'Longitude': [35, 12],
-                           'home team': ['test1', 'test2']})
+        df = pd.DataFrame(
+            {
+                "Latitude": [77, 100],
+                "Longitude": [35, 12],
+                "home team": ["test1", "test2"],
+            }
+        )
         expected = 1557.8733
-        exp_mat = np.array([[0, expected],[expected, 0]])
+        exp_mat = np.array([[0, expected], [expected, 0]])
         npt.assert_array_almost_equal(exp_mat, dist_matrix(df))
 
     # Edge tests
@@ -77,7 +83,7 @@ class TestDistance(unittest.TestCase):
         Edge test that tests if inputted tuples have latitude and longitude
         """
         with self.assertRaises(TypeError):
-            point1 = (77, 71 ,3)
+            point1 = (77, 71, 3)
             point2 = (100, 12)
             dist(point1, point2)
 
@@ -86,7 +92,7 @@ class TestDistance(unittest.TestCase):
         Edge test that tests if data frame raises an error if no latitude or longitude
         """
         with self.assertRaises(ValueError):
-            df = pd.DataFrame({'Latitude': [77, 100], 'home team': ['test1', 'test2']})
+            df = pd.DataFrame({"Latitude": [77, 100], "home team": ["test1", "test2"]})
             dist_matrix(df)
 
     def test_dist_mat_col2(self):
@@ -94,8 +100,9 @@ class TestDistance(unittest.TestCase):
         Edge test that tests if data frame raises an error if no home team
         """
         with self.assertRaises(ValueError):
-            df = pd.DataFrame({'Latitude': [77, 100], 'Longitude': [35, 12]})
+            df = pd.DataFrame({"Latitude": [77, 100], "Longitude": [35, 12]})
             dist_matrix(df)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

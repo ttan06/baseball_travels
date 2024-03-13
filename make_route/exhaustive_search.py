@@ -26,6 +26,7 @@ from itertools import permutations
 import pandas as pd
 from .distance import dist_matrix
 
+
 def home_game_exists(schedule, team):
     """
     Function that takes in a team and a schedule and finds if the team has a game in
@@ -40,6 +41,7 @@ def home_game_exists(schedule, team):
             return True
     return False
 
+
 def reduce_schedule(schedule, teams, start_date, end_date):
     """
     Function that takes in teams and a date range to create a subset of the MLB schedule
@@ -52,13 +54,16 @@ def reduce_schedule(schedule, teams, start_date, end_date):
         specific teams and between dates
     """
     if (pd.to_datetime(end_date) - pd.to_datetime(start_date)).days + 1 < len(teams):
-        raise ValueError('More teams than days')
-    sched_subset = schedule.loc[(schedule['date'] >= start_date) & (schedule['date'] <= end_date)]
+        raise ValueError("More teams than days")
+    sched_subset = schedule.loc[
+        (schedule["date"] >= start_date) & (schedule["date"] <= end_date)
+    ]
     for team_ in teams:
         if home_game_exists(sched_subset, team_) is False:
-            raise ValueError(team_ + ' do not have a home game in this time frame')
-    sched_subset = sched_subset.loc[schedule['home team'].isin(teams)]
+            raise ValueError(team_ + " do not have a home game in this time frame")
+    sched_subset = sched_subset.loc[schedule["home team"].isin(teams)]
     return sched_subset
+
 
 def find_all_routes(teams):
     """
@@ -68,9 +73,10 @@ def find_all_routes(teams):
     :return: list: list of routes, where a route is a list of teams in a specific order
     """
     if len(teams) > 6:
-        raise ValueError('Too many selections')
+        raise ValueError("Too many selections")
     routes = [list(route) for route in permutations(teams)]
     return routes
+
 
 def build_dist_matrix(teams, schedule):
     """
@@ -85,19 +91,22 @@ def build_dist_matrix(teams, schedule):
         distance matrix - (n,n) numpy array of distances between rows and columns.
             Ordered by team in route.
     """
-    team_coords = schedule[['home team', 'Latitude', 'Longitude']]
+    team_coords = schedule[["home team", "Latitude", "Longitude"]]
     team_coords = team_coords.drop_duplicates()
-    team_coords = team_coords.loc[(team_coords['home team'].isin(teams))].reset_index()
-    team_coords['home team'] = team_coords['home team'].astype('category')
-    team_coords['home team'] = team_coords['home team'].cat.set_categories(teams)
-    team_coords = team_coords.sort_values(by=['home team'], ascending = True)
+    team_coords = team_coords.loc[(team_coords["home team"].isin(teams))].reset_index()
+    team_coords["home team"] = team_coords["home team"].astype("category")
+    team_coords["home team"] = team_coords["home team"].cat.set_categories(teams)
+    team_coords = team_coords.sort_values(by=["home team"], ascending=True)
     team_dict = {}
     coord_dict = {}
     for i in range(len(team_coords)):
-        team_dict[i] = team_coords['home team'][i]
-        coord_dict[team_coords['home team'][i]] = \
-            (team_coords['Latitude'][i],team_coords['Longitude'][i])
+        team_dict[i] = team_coords["home team"][i]
+        coord_dict[team_coords["home team"][i]] = (
+            team_coords["Latitude"][i],
+            team_coords["Longitude"][i],
+        )
     return team_dict, dist_matrix(team_coords)
+
 
 def game_finder(schedule, route):
     """
@@ -110,8 +119,9 @@ def game_finder(schedule, route):
     """
     team_games = {}
     for team in route:
-        team_games[team] = schedule.loc[(schedule['home team'] == team)].reset_index()
+        team_games[team] = schedule.loc[(schedule["home team"] == team)].reset_index()
     return team_games
+
 
 def check_valid_route(route, schedule):
     """
@@ -132,26 +142,31 @@ def check_valid_route(route, schedule):
     col_names = first_team.columns
     sched = []
     team1_earliest = first_team.head(1)
-    min_date = team1_earliest['date'][0]
+    min_date = team1_earliest["date"][0]
     sched.append(team1_earliest.values.tolist())
     for team in route[1:]:
         games = team_games[team].reset_index()
-        game_options = games.loc[games['date'] > min_date].sort_values(by=['date'])
+        game_options = games.loc[games["date"] > min_date].sort_values(by=["date"])
         min_game = game_options.head(1)
         sched.append(min_game.values.tolist())
-        if len(min_game['date']) == 0:
+        if len(min_game["date"]) == 0:
             return False, pd.DataFrame, 0
-        min_date = list(min_game['date'])[0]
+        min_date = list(min_game["date"])[0]
     final_sched = []
     for game in sched:
         final_sched.append(game[0])
     final_sched = pd.DataFrame(final_sched, columns=col_names)
-    total_days = (list(final_sched['date'])[-1] - final_sched['date'][0]).days + 1
+    total_days = (list(final_sched["date"])[-1] - final_sched["date"][0]).days + 1
     if len(final_sched) == 0:
-        raise ValueError('No Possible Games')
-    return True, \
-        final_sched[['date', 'time', 'away team', 'home team', 'Latitude', 'Longitude']], \
-        total_days
+        raise ValueError("No Possible Games")
+    return (
+        True,
+        final_sched[
+            ["date", "time", "away team", "home team", "Latitude", "Longitude"]
+        ],
+        total_days,
+    )
+
 
 def reduce_routes(routes, schedule, cost_df):
     """
@@ -181,12 +196,17 @@ def reduce_routes(routes, schedule, cost_df):
             trip_length.append(total_days)
             distances.append(distance)
             costs.append(cost)
-    all_route_options = pd.DataFrame({'route': reduced_routes,
-                                      'games': game_order,
-                                      'time': trip_length,
-                                      'distance': distances,
-                                      'cost': costs})
+    all_route_options = pd.DataFrame(
+        {
+            "route": reduced_routes,
+            "games": game_order,
+            "time": trip_length,
+            "distance": distances,
+            "cost": costs,
+        }
+    )
     return all_route_options
+
 
 def calculate_distance(route, schedule):
     """
@@ -201,9 +221,10 @@ def calculate_distance(route, schedule):
     distance_matrix = build_dist_matrix(route, schedule)[1]
     total_dist = 0
     for i in range(len(route)):
-        if i+1 < len(route):
-            total_dist += distance_matrix[i][i+1]
+        if i + 1 < len(route):
+            total_dist += distance_matrix[i][i + 1]
     return round(total_dist)
+
 
 def calculate_cost(route, cost_df):
     """
@@ -216,14 +237,15 @@ def calculate_cost(route, cost_df):
     total_cost = 0
     num_teams = len(route)
     for i in range(num_teams):
-        if i+1 < len(route):
+        if i + 1 < len(route):
             cost = cost_df.loc[
-                (cost_df['Team1'] == route[i])
-                & (cost_df['Team2'] == route[i+1])].reset_index()['fare'][0]
+                (cost_df["Team1"] == route[i]) & (cost_df["Team2"] == route[i + 1])
+            ].reset_index()["fare"][0]
             total_cost += cost
     return round(total_cost, 2)
 
-def sort_order(route_df, method='distance'):
+
+def sort_order(route_df, method="distance"):
     """
     Function that sorts the routes by the desired method, either distance, cost or time.
     :param route_df: data frame - each row is a route and the distance, cost, and length of time.
@@ -231,19 +253,25 @@ def sort_order(route_df, method='distance'):
     :return: sorted_route_df: data frame - sorted version of route_df
     """
     method = str(method).lower()
-    if method == 'time':
-        sorted_route_df = route_df.sort_values(by=[method, 'cost', 'distance'], ascending=True)
+    if method == "time":
+        sorted_route_df = route_df.sort_values(
+            by=[method, "cost", "distance"], ascending=True
+        )
         sorted_route_df = sorted_route_df.reset_index()
-        sorted_route_df = sorted_route_df.drop(columns = ['index'])
+        sorted_route_df = sorted_route_df.drop(columns=["index"])
         return sorted_route_df
-    if method == 'cost':
-        sorted_route_df = route_df.sort_values(by=[method, 'time', 'distance'], ascending=True)
+    if method == "cost":
+        sorted_route_df = route_df.sort_values(
+            by=[method, "time", "distance"], ascending=True
+        )
         sorted_route_df = sorted_route_df.reset_index()
-        sorted_route_df = sorted_route_df.drop(columns=['index'])
+        sorted_route_df = sorted_route_df.drop(columns=["index"])
         return sorted_route_df
-    if method == 'distance':
-        sorted_route_df = route_df.sort_values(by=[method, 'time', 'cost'], ascending=True)
+    if method == "distance":
+        sorted_route_df = route_df.sort_values(
+            by=[method, "time", "cost"], ascending=True
+        )
         sorted_route_df = sorted_route_df.reset_index()
-        sorted_route_df = sorted_route_df.drop(columns=['index'])
+        sorted_route_df = sorted_route_df.drop(columns=["index"])
         return sorted_route_df
-    raise ValueError('Invalid Sort')
+    raise ValueError("Invalid Sort")
