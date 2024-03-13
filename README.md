@@ -1,5 +1,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/ttan06/baseball_travels/badge.svg?branch=main)](https://coveralls.io/github/ttan06/baseball_travels?branch=main)
 
+![Build Test](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
 # Baseball Stadium Travels
 
 ## Project Type
