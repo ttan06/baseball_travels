@@ -281,10 +281,10 @@ def update_image_path(table_data):
     new_images = []
     new_images.append(html.H5("Route: ", style={"margin-top": "15px"}))
 
-    for team_dict_ind,team_dict in enumerate(table_data):
+    for team_dict_ind, team_dict in enumerate(table_data):
         if team_dict_ind != 0:
             arrow = html.Img(
-                src="assets/arrow_2.png", alt='arrow', style={"width": "50px"}
+                src="assets/arrow_2.png", alt="arrow", style={"width": "50px"}
             )
 
             new_images.append(arrow)
@@ -320,9 +320,11 @@ def update_game_schedule_table(teams, start_date, end_date, sort_method):
     route_df = reduce_routes(routes, short_sched, cost_dfx)
     sorted_route = sort_order(route_df, sort_method)
     sched = sorted_route["games"][0]
-    sched = sched[["date", "time", "home team", "away team"]]
     sched["date"] = sched["date"].dt.strftime("%m-%d-%Y")
-    sched.columns = ["Date", "Time", "Home Team", "Away Team"]
+    sched = sched.reset_index()
+    sched["Route Order"] = sched["index"] + 1
+    sched = sched[["Route Order", "date", "time", "home team", "away team"]]
+    sched.columns = ["Route Order", "Date", "Time", "Home Team", "Away Team"]
     return sched.to_dict("records")
 
 
