@@ -23,8 +23,8 @@ Functions:
 
 import unittest
 import pandas as pd
-from makeRoute.exhaustiveSearch import reduce_routes, reduce_schedule, sort_order, find_all_routes
-from makeRoute.exhaustiveSearch import calculate_distance, calculate_cost
+from make_route.exhaustive_search import reduce_routes, reduce_schedule, sort_order, find_all_routes
+from make_route.exhaustive_search import calculate_distance, calculate_cost
 
 class TestSearch(unittest.TestCase):
     """

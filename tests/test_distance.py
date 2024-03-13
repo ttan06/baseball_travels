@@ -18,7 +18,7 @@ import unittest
 import pandas as pd
 import numpy as np
 import numpy.testing as npt
-from makeRoute.distance import dist, dist_matrix
+from make_route.distance import dist, dist_matrix
 
 class TestDistance(unittest.TestCase):
     """

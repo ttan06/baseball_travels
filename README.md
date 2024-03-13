@@ -52,6 +52,3 @@ Map/Distance Data:
 
 Flight Data: 
 * https://data.transportation.gov/Aviation/Consumer-Airfare-Report-Table-6-Contiguous-State-C/yj5y-b2ir/data
-
-
-
