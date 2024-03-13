@@ -54,9 +54,9 @@ def reduce_schedule(schedule, teams, start_date, end_date):
     if (pd.to_datetime(end_date) - pd.to_datetime(start_date)).days + 1 < len(teams):
         raise ValueError('More teams than days')
     sched_subset = schedule.loc[(schedule['date'] >= start_date) & (schedule['date'] <= end_date)]
-    for tm in teams:
-        if home_game_exists(sched_subset, tm) is False:
-            raise ValueError(tm + ' do not have a home game in this time frame')
+    for team_ in teams:
+        if home_game_exists(sched_subset, team_) is False:
+            raise ValueError(team_ + ' do not have a home game in this time frame')
     sched_subset = sched_subset.loc[schedule['home team'].isin(teams)]
     return sched_subset
 
