@@ -217,8 +217,8 @@ def update_graph(teams, start_date, end_date, sort_method):
     team_away = sched["away team"].tolist()
     order = list(range(len(sched)))
     order_final = []
-    for x in order:
-        order_final.append(str(x + 1))
+    for rank in order:
+        order_final.append(str(rank + 1))
 
     sched["date"] = pd.to_datetime(sched["date"])
     sched["date"] = sched["date"].dt.strftime("%m-%d-%Y")
