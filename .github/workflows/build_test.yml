@@ -18,8 +18,10 @@ on:
     branches:
       - main
 
+
 # A list of jobs to run as part of the workflow
 jobs:
+            
 
   # Each job gets a name. This one builds/tests all branches.
   build_test:
@@ -80,15 +82,7 @@ jobs:
       - name: Install additional development dependencies
         run: |
           conda install --yes coverage
-      
-      # If there are any other steps in order for your tests to
-      # run successfully, you can add those steps here!
-
-      # Next step: run pylint. Anything less than 10/10 will fail.
-      - name: Lint with pylint
-        run: |
-          pylint makeRoute/*.py
-          pylint app.py
+    
 
       # Next step: run the unit tests with code coverage.
       - name: Unit tests
@@ -100,7 +94,7 @@ jobs:
 
       # Lastly: report code coverage to Coveralls.
       - name: Report code coverage to Coveralls
-        uses: coverallsapp/github-action@master
+        uses: coverallsapp/github-action@v2.2.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           base-path: makeRoute
@@ -112,6 +106,13 @@ jobs:
           # a matrix, this isn't needed.
           flag-name: run ${{ join(matrix.*, ' - ') }}
           parallel: true
+
+
+      # Next step: run pylint. Anything less than 10/10 will fail.
+      - name: Lint with pylint
+        run: |
+          pylint makeRoute/*.py
+          pylint app.py
 
   # After all the parallel matrix runs for build_test are done
   # for the various python versions, we run this job to send the
