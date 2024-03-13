@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/ttan06/baseball_travels/badge.svg?branch=main)](https://coveralls.io/github/ttan06/baseball_travels?branch=main)
+
 # Baseball Stadium Travels
 
 ## Project Type
@@ -28,6 +30,9 @@ Schedule Data:
 * https://www.baseball-reference.com/leagues/majors/2024-schedule.shtml 
 * https://www.mlbschedulegrid.com/downloads
 
+US Stadium locations
+* https://docs.google.com/spreadsheets/d/1p0R5qqR7XjoRG2mR5E1D_trlygHSqMOUdMgMpzq0gjU/htmlview
+
 Map/Distance Data:
 * https://www.openstreetmap.org/#map=4/38.01/-95.84 
 
@@ -53,6 +58,8 @@ python3 app.py
 ```
 
 After running the app, open the link provided from the terminal in your browser. Then select the teams from the drop down list you would like to visit then view the paths to take. 
+
+
 
 
 
