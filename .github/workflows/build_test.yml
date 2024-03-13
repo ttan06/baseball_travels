@@ -63,7 +63,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v2
         with:
           # Use the environment name from your environment.yml file
-          activate-environment: ci_example
+          activate-environment: baseball_env
           # The name of the environment file you want conda to use
           environment-file: environment.yml
           # Whether you want conda to automatically update the conda
@@ -96,8 +96,8 @@ jobs:
         uses: coverallsapp/github-action@v2.2.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          base-path: makeRoute
-          path-to-lcov:  makeRoute/coverage.lcov
+          base-path: 
+          path-to-lcov:  coverage.lcov
           # The following two options are needed for "parallel"
           # runs - ie if you have a matrix of python versions.
           # This holds off on reporting code coverage to
