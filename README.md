@@ -3,45 +3,13 @@
 ![Build Test](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
 # Baseball Stadium Travels
 
-## Project Type
+## Project Description
+Known as America’s pastime, going to baseball games is a common summertime activity. One popular way is to go on a stadium tour and travel across the country, watching a game at each stadium.
 
-The plan for this project is to be a Web Application that takes in user inputs of Teams and Dates and provides potential routes and schedules for users to choose from.
+Our application creates an optimal schedule for fans of all types to attending games at MLB stadiums in 2024, given user inputted parameters.
 
-## Questions
+Users are able to optimize for cost, time, or distance, choosing either the cheapest route, quickest route, or the route with the least travel, and can view the journey on a map. 
 
-* How many teams can the app handle on a schedule without providing too many options?
-* Can we optimize for distance and maybe cost?
-* Can we take lineup and potential starters into account to maximize enjoyment for fans?
-
-
-## Goals
-
-Create an interface that allows users to select parameters such as weeks available and stadiums to visit, in order to create an optimal route that satisfies all constraints. 
-
-Stretch Goals:
-* Create visualization of route on map
-* Look at ticket price to see differences in price per away team
-* Build in home-team promotions
-* Use projected lineups to maximize "fun" (maybe day with max team WAR or Ace pitchers)
-
-
-## Data
-
-Schedule Data: 
-* https://www.baseball-reference.com/leagues/majors/2024-schedule.shtml 
-* https://www.mlbschedulegrid.com/downloads
-
-US Stadium locations
-* https://docs.google.com/spreadsheets/d/1p0R5qqR7XjoRG2mR5E1D_trlygHSqMOUdMgMpzq0gjU/htmlview
-
-Map/Distance Data:
-* https://www.openstreetmap.org/#map=4/38.01/-95.84 
-
-Ticket Data: 
-* https://www.mlb.com/tickets
-
-Flight Data: 
-* https://www.flightconnections.com/airlines
 
 ## How to run app
 
@@ -64,8 +32,23 @@ python3 app.py
 ```
 
 After running the app, open the link provided from the terminal in your browser. Then select the teams from the drop down list you would like to visit then view the paths to take. 
+## Future Work
+* Optimize search algorithm to remove team entry limit and reduce runtime and loading time.
 
+* Introduce method to choose specific games, especially for more advanced fans. These can be based on the away teams, home team promotions, or even specific player appearances.
 
+* Incorporate live flight costs and stadium ticket prices and add to the total cost. 
 
+## Data
 
+Schedule Data: 
+* https://www.baseball-reference.com/leagues/majors/2024-schedule.shtml 
 
+US Stadium locations
+* https://docs.google.com/spreadsheets/d/1p0R5qqR7XjoRG2mR5E1D_trlygHSqMOUdMgMpzq0gjU/htmlview
+
+Map/Distance Data:
+* https://www.openstreetmap.org/#map=4/38.01/-95.84 
+
+Flight Data: 
+* https://data.transportation.gov/Aviation/Consumer-Airfare-Report-Table-6-Contiguous-State-C/yj5y-b2ir/data
