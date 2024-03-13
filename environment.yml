@@ -10,8 +10,8 @@ dependencies:
   - dash
   - pandas
   - scipy
-  - itertools
   - pip:
+    - itertools
     - python_tsp==0.4.1
     - contourpy==1.0.6
     - numpy==1.26.4
