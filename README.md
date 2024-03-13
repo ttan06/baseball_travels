@@ -1,5 +1,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/ttan06/baseball_travels/badge.svg?branch=main)](https://coveralls.io/github/ttan06/baseball_travels?branch=main)
 
+![Build Test](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
 # Baseball Stadium Travels
 
 ## Project Type
@@ -44,14 +45,19 @@ Flight Data:
 
 ## How to run app
 
-The following packages need to be installed before running the app :
+The packages within environment.yml have to be installed before running the app, we recommend running the command below to create the environment:
 
-* plotly : pip3 install plotly
-* pandas : pip3 install pandas
-* dash : pip3 install dash
+```
+conda env create -f environment.yml
+```
 
+Then activate the environment: 
 
-To start the app just run the command below in your terminal at baseball_travels : 
+```
+conda activate baseball_env
+```
+
+Then you can start the app just run the command below in your terminal at baseball_travels : 
 
 ```
 python3 app.py

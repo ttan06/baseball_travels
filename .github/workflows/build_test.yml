@@ -110,7 +110,7 @@ jobs:
       # Next step: run pylint. Anything less than 10/10 will fail.
       - name: Lint with pylint
         run: |
-          pylint makeRoute/*.py
+          pylint make_route/*.py
           pylint app.py
 
   # After all the parallel matrix runs for build_test are done
